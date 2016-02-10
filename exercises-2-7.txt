@@ -1,0 +1,94 @@
+mysql> source data/import-account.sql;
+mysql> source data/import-addressbook.sql;
+mysql> source data/import-entry.sql;
+
+mysql> create or replace view `countryOccurence` as select country,count(country) 
+from Address group by country;                                                                                    
+
+mysql> describe countryOccurence;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| country        | varchar(255) | YES  |     | NULL    |       |
+| count(country) | bigint(21)   | NO   |     | 0       |       |
++----------------+--------------+------+-----+---------+-------+
+
+
+mysql> select * from countryOccurence order by `count(country)` desc;
++----------------------------------------------+----------------+
+| country                                      | count(country) |
++----------------------------------------------+----------------+
+| Mozambique                                   |             18 |
+| Saint Helena, Ascension and Tristan da Cunha |             16 |
+
+mysql> select lcase(country) from countryOccurence order by `count(country)` desc;                
++----------------------------------------------+
+| lcase(country)                               |
++----------------------------------------------+
+| mozambique                                   |
+| saint helena, ascension and tristan da cunha |
+| wallis and futuna                            |
+| andorra                                      |
+| canada                                       |
+| curaçao                                      |
+| argentina      
+
+mysql> select name,accountId from AddressBook where name="Pharetra Ut Limited";  
++---------------------+-----------+
+| name                | accountId |
++---------------------+-----------+
+| Pharetra Ut Limited |        88 |
++---------------------+-----------+
+
+mysql> select firstName from AddressBook join Entry on Entry.AddressBookId=AddressBook.id where AddressBook.name = "Pharetra Ut Limited";
++-------------+
+| firstName   |
++-------------+
+| Zelenia     |
+| Abdul       |
+| Idola       |
+| Illana      |
+| Winifred    |
+| Buckminster |
+...65 rows in set (0.00 sec)
+
+mysql> select concat(substring(firstName,1,length(firstName)-1), upper(right(firstName,1))) from Entry join AddressBook on Entry.AddressBookId=AddressBook.id where AddressBook.name = "Pharetra Ut Limited";
+
++-------------------------------------------------------------------------------+
+| concat(substring(firstName,1,length(firstName)-1), upper(right(firstName,1))) |
++-------------------------------------------------------------------------------+
+| ZeleniA                                                                       |
+| AbduL                                                                         |
+| IdolA                                                                         |
+| IllanA                                                                        |
+...65 rows in set (0.00 sec)
+
+mysql> select content from ElectronicMail join Entry on ElectronicMail.entryId=Entry.id join AddressBook on Entry.AddressBookId=AddressBook.id where AddressBook.id=100;
++--------------------------------------------+
+| content                                    |
++--------------------------------------------+
+| tortor.dictum@Nulla.org                    |
+| malesuada.fames.ac@Sedeu.co.uk             |
+| velit@vestibulum.co.uk                     |
+| tincidunt.congue.turpis@Inmi.net           |
+| vitae.diam@sapienAeneanmassa.com           |
+| Nunc.ac@parturientmontesnascetur.com       |
+| cursus.vestibulum@pellentesqueSeddictum.ca |
+| nibh.Donec.est@nibh.org                    |
+| eu.tellus@ipsum.co.uk                      |
+| massa.Quisque.porttitor@enimSednulla.edu   |
+| mauris.blandit.mattis@Integersemelit.net   |
+| eget@viverraMaecenasiaculis.net            |
+| vulputate.posuere.vulputate@liberoDonec.ca |
+| Nam.tempor@nisimagna.co.uk                 |
++--------------------------------------------+
+14 rows in set (0.00 sec)
+
+1983 rows in set (0.01 sec)
+
+mysql> select substr(content,(instr(content,'@'))+1) from ElectronicMail 
+group by substr(content,(instr(content,'@'))+1);
+-or-
+mysql> select substr(content,(instr(content,'@'))+1) as var from ElectronicMail 
+group by var;
+
