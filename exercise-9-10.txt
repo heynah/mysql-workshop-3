@@ -1,0 +1,29 @@
+405 rows in set (0.00 sec)
+
+
+mysql> select birthday from Phone join Entry on Phone.entryId=Entry.id 
+where Entry.birthday<"1960-01-11" and Entry.birthday>"1950-10-01" and Phone.subtype="landline";
+154 rows in set (0.00 sec)
+
+
+mysql> select birthday,Phone.subtype from Phone join Entry on Phone.entryId=Entry.id 
+where Entry.birthday<"1960-01-11" and Entry.birthday>"1950-10-01" and Phone.subtype="fax";
+123 rows in set (0.00 sec)
+
+mysql> select birthday,Phone.subtype from Phone join Entry on Phone.entryId=Entry.id 
+where Entry.birthday<"1960-01-11" and Entry.birthday>"1950-10-01" and Phone.subtype="cellular";
+128 rows in set (0.00 sec)
+
+> 128+123+154
+405
+
+
+select email from Account join AddressBook on Account.id=AddressBook.accountId 
+join Entry on AddressBook.id=Entry.addressBookId join Phone on Entry.id=Phone.entryId 
+where Phone.content like '_-%';
+
+mysql> select Account.email, Phone.content from Phone join Entry on Phone.entryId=Entry.id 
+join AddressBook on Entry.addressBookId=AddressBook.id join Account on 
+AddressBook.accountId=Account.id where Phone.content like '%-___-___-____';
+
+200 rows in set (0.00 sec)
